@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>221A Baker Street</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="221A Baker Street">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="221A Baker Street">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="221A Baker Street">
+  
+    <link rel="alternate" href="/atom.xml" title="221A Baker Street" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">221A Baker Street</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-imperative-vs-declarative" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/07/imperative-vs-declarative/" class="article-date">
+  <time datetime="2017-06-07T01:57:17.000Z" itemprop="datePublished">2017-06-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/07/imperative-vs-declarative/">Imperative vs Declarative</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Conception"><a href="#Conception" class="headerlink" title="Conception"></a>Conception</h2><p>Imperative Programming 和 Declarative Programming是两种不同的编程&gt;理念。首先，先总体地说一下二者的定义或者说是关键的区分点：</p>
+<ul>
+<li>Imperative Programming: telling the “machine” how to do something, and, as a result, what you want to happen will happen. </li>
+<li>Declarative Programming: telling the “machine” what you would like to happen, and let the computer figure out how to do it.</li>
+</ul>
+<p>以上提供给我们的最直接的概念就是imperative是程序员在程序中明确的指明了应该如何去做一件事，而declarative是程序员仅仅在程序中制定自己要做的事情，至于该如何去做，则交由程序或者系统自己去决定。 </p>
+<h2 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h2><h3 id="例1"><a href="#例1" class="headerlink" title="例1"></a>例1</h3><p>如果我们要实现一个数组中的元素的累加，imperative programming 会倾向于有程序员自己定义一个for loop来实现累加，而declarative则可能仅仅使用一个sum()方法，对于累加这件事，imperative是由编程者指定了每一步的操作，而declarative则是编程者仅仅指明了累加这件事。<strong>可以这样说，imperative programming指定了任务的具体实现，而declarative programming指定了任务的内容。</strong></p>
+<h3 id="例2"><a href="#例2" class="headerlink" title="例2"></a>例2</h3><p>SQL是一个declarative programming的例子，假设有这样一串query：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SELECT * from dogs</div><div class="line">INNER JOIN owners</div><div class="line">WHERE dogs.owner_id = owners.id</div></pre></td></tr></table></figure></p>
+<p>这里我们并没有告诉SQL应该怎样去一步一步查找我们想要的结果，而是直接告诉SQL我们需要什么样的结果，至于如何查找，那是数据库自己去解决的问题。</p>
+<h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>最早的时候，计算机的资源有限，因此必须精打细算每一步执行，这是imperative programming的起源，尽管到了今天，imperative programming依然流行，C，C++，Jave，Ruby等等都是imperative programming的风格，而declarative programming是一种更加接近人类思维的方式，它更加抽象，更加high-level，它总结出的用来描述逻辑的语言能够使我们的程序更加简洁，直观。这里我不会去说两者哪个性能更好，毫无疑问，一个经验一般的程序员实现的imperative不会比隐藏在declarative后面的由专业人员优化的版本更快，但同样的，有时候一个通盘考虑的imperative实现打破了在declarative中任务之间的壁垒，也许会取得比declarative更好的效果也说不定。</p>
+<p>从语言发展的角度来看，它总是朝着更高级，更抽象的角度发展，如果某项任务有着一种内在的逻辑可以抽象出来，使用declarative的方式提供一种一劳永逸的方法应该是一种更好的选择。尽管在某些场景下确实需要我们指定how，可能是出于对性能的不满意，也可能是没有一种现成的抽象表达来适配我们想要做的事情，这些时候我们需要去实现一些imperative code。但是换一种角度，当我们发现某件事情没有一个让我们满意的抽象库的实现，我们同样可以考虑是否可以由自己去实现一个。虽然工作量可能大于imperative，但从长远的角度来看，同样也好处多多。</p>
+<p>imperative和declarative的界限其实也并非那么泾渭分明，今天的imperative也可能是昨天的declarative，而今天的declarative到了明天未尝不会变成更高级的declarative背后的一个imperative步骤。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="http://latentflip.com/imperative-vs-declarative" target="_blank" rel="external"><em>Imperative vs Declarative</em></a><br><a href="https://www.puritys.me/zh_cn/docs-blog/article-320-Imperative-programming-or-declarative-programming.html" target="_blank" rel="external"><em>Imperative programming or declarative programming</em></a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/07/imperative-vs-declarative/" data-id="cj3mci2e00001w6zzvxojknbo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/07/hello-world/" class="article-date">
+  <time datetime="2017-06-07T01:55:37.000Z" itemprop="datePublished">2017-06-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/07/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/07/hello-world/" data-id="cj3mci2dw0000w6zzzke34cm1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/06/07/imperative-vs-declarative/">Imperative vs Declarative</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Dr.Moriaty<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
