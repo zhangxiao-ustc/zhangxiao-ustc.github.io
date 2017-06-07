@@ -5,16 +5,16 @@
   
   <title>C++中的宏定义 | 221A Baker Street</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#以及\">
+  <meta name="description" content="# 宏定义中，#的功能是将其后面的宏参数进行字符串化操作，可以理解成去掉#号并在该其左右加上双引号。123#define WARN_IF(EXP) do &amp;#123;if (EXP) fprintf(stderr, &quot;Warning:&quot; #EXP &quot;\n&quot;);&amp;#125; while(0)...WARN_IF(divider == 0); 上面的宏会被替换成1do &amp;#123; if (divid">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++中的宏定义">
 <meta property="og:url" content="http://yoursite.com/2017/06/07/c_macro/index.html">
 <meta property="og:site_name" content="221A Baker Street">
-<meta property="og:description" content="#以及\">
-<meta property="og:updated_time" content="2017-06-07T04:42:10.000Z">
+<meta property="og:description" content="# 宏定义中，#的功能是将其后面的宏参数进行字符串化操作，可以理解成去掉#号并在该其左右加上双引号。123#define WARN_IF(EXP) do &amp;#123;if (EXP) fprintf(stderr, &quot;Warning:&quot; #EXP &quot;\n&quot;);&amp;#125; while(0)...WARN_IF(divider == 0); 上面的宏会被替换成1do &amp;#123; if (divid">
+<meta property="og:updated_time" content="2017-06-07T08:39:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++中的宏定义">
-<meta name="twitter:description" content="#以及\">
+<meta name="twitter:description" content="# 宏定义中，#的功能是将其后面的宏参数进行字符串化操作，可以理解成去掉#号并在该其左右加上双引号。123#define WARN_IF(EXP) do &amp;#123;if (EXP) fprintf(stderr, &quot;Warning:&quot; #EXP &quot;\n&quot;);&amp;#125; while(0)...WARN_IF(divider == 0); 上面的宏会被替换成1do &amp;#123; if (divid">
   
     <link rel="alternate" href="/atom.xml" title="221A Baker Street" type="application/atom+xml">
   
@@ -66,7 +66,7 @@
         <section id="main"><article id="post-c_macro" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/07/c_macro/" class="article-date">
-  <time datetime="2017-06-07T04:42:10.000Z" itemprop="datePublished">2017-06-07</time>
+  <time datetime="2017-06-07T08:39:35.000Z" itemprop="datePublished">2017-06-07</time>
 </a>
     
   </div>
@@ -85,11 +85,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="以及"><a href="#以及" class="headerlink" title="#以及\"></a>#以及\</h2>
+        <h2 id=""><a href="#" class="headerlink" title="#"></a>#</h2><hr>
+<p>宏定义中，#的功能是将其后面的宏参数进行字符串化操作，可以理解成去掉#号并在该其左右加上双引号。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> WARN_IF(EXP) do &#123;<span class="meta-keyword">if</span> (EXP) fprintf(stderr, <span class="meta-string">"Warning:"</span> #EXP <span class="meta-string">"\n"</span>);&#125; while(0)</span></div><div class="line">...</div><div class="line">WARN_IF(divider == <span class="number">0</span>);</div></pre></td></tr></table></figure></p>
+<p>上面的宏会被替换成<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">do</span> &#123; <span class="keyword">if</span> (divider == <span class="number">0</span>) <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Warning:"</span> <span class="string">"divider == 0"</span> <span class="string">"\n"</span>); &#125; <span class="keyword">while</span>(<span class="number">0</span>);</div></pre></td></tr></table></figure></p>
+<p>这种特性带来的一个非常方便的用处就是使用宏LOG时可以输出更加丰富的信息</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title="##"></a>##</h2><hr>
+<p>##是连接符，用来将多个Token连接成一个Token。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Command</span> &#123;</span></div><div class="line">  <span class="keyword">char</span>* name;</div><div class="line">  <span class="keyword">void</span> (*function)(<span class="keyword">void</span>);</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> COMMAND(NAME) &#123;NAME, NAME ## _command&#125;</span></div><div class="line">...</div><div class="line">Command command[] = &#123; COMMAND(quit), COMMAND(help), ...&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="…"><a href="#…" class="headerlink" title="…"></a>…</h2><hr>
+<p>…是变参宏（Variadic Macro）。比如<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> myprintf(templt, ...) fprintf(stderr, templt, __VA_ARGS__)</span></div></pre></td></tr></table></figure></p>
+<p>或者<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> myprintf(tmplt, args...) fprintf(stderr, templt, args)</span></div></pre></td></tr></table></figure></p>
+<p>区别在于如果没有提供变参名，则必须使用<strong>VA</strong>ARGS__来代替它。同时要注意的是，如果变参的个数为0，最后一个逗号不能省略。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">myprintf(<span class="string">"Error"</span>,);</div></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/c_macro/" data-id="cj3mibb7u0000iizzfj2y0kb2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/c_macro/" data-id="cj3n4b54s0000wszztbsi9prm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -97,6 +107,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2017/06/07/mxnet_analysis_dmlc_register/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MXNet 源码分析(dmlc_core/include/dmlc/register.h)
+        
+      </div>
+    </a>
   
   
     <a href="/2017/06/07/imperative-vs-declarative/" id="article-nav-older" class="article-nav-link-wrap">
@@ -136,6 +155,14 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_data/">MXNet源码分析(dmlc_core/include/dmlc/data.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_register/">MXNet 源码分析(dmlc_core/include/dmlc/register.h)</a>
+          </li>
         
           <li>
             <a href="/2017/06/07/c_macro/">C++中的宏定义</a>

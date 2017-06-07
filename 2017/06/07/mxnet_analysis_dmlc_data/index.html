@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MXNet源码分析(dmlc_core/include/dmlc/data.h) | 221A Baker Street</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="data.h提供处理输入数据的通用接口类  class DataIter 12345678template&amp;lt;typename DType&amp;gt;class DataIter &amp;#123; public:  virtual ~DataIter(void) &amp;#123;&amp;#125;  virtual void BeforeFirst(void) = 0；  virtual bool Next(v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MXNet源码分析(dmlc_core&#x2F;include&#x2F;dmlc&#x2F;data.h)">
+<meta property="og:url" content="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_data/index.html">
+<meta property="og:site_name" content="221A Baker Street">
+<meta property="og:description" content="data.h提供处理输入数据的通用接口类  class DataIter 12345678template&amp;lt;typename DType&amp;gt;class DataIter &amp;#123; public:  virtual ~DataIter(void) &amp;#123;&amp;#125;  virtual void BeforeFirst(void) = 0；  virtual bool Next(v">
+<meta property="og:updated_time" content="2017-06-07T14:56:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MXNet源码分析(dmlc_core&#x2F;include&#x2F;dmlc&#x2F;data.h)">
+<meta name="twitter:description" content="data.h提供处理输入数据的通用接口类  class DataIter 12345678template&amp;lt;typename DType&amp;gt;class DataIter &amp;#123; public:  virtual ~DataIter(void) &amp;#123;&amp;#125;  virtual void BeforeFirst(void) = 0；  virtual bool Next(v">
+  
+    <link rel="alternate" href="/atom.xml" title="221A Baker Street" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">221A Baker Street</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mxnet_analysis_dmlc_data" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/07/mxnet_analysis_dmlc_data/" class="article-date">
+  <time datetime="2017-06-07T14:56:13.000Z" itemprop="datePublished">2017-06-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MXNet源码分析(dmlc_core/include/dmlc/data.h)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>data.h提供处理输入数据的通用接口类</p>
+<hr>
+<h2 id="class-DataIter"><a href="#class-DataIter" class="headerlink" title="class DataIter"></a>class DataIter</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> DType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataIter</span> &#123;</span></div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="keyword">virtual</span> ~DataIter(<span class="keyword">void</span>) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">BeforeFirst</span><span class="params">(<span class="keyword">void</span>)</span> </span>= <span class="number">0</span>；</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">Next</span><span class="params">(<span class="keyword">void</span>)</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">const</span> DType &amp;<span class="title">Value</span><span class="params">(<span class="keyword">void</span>)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>唯一的问题的是纯虚基类的dtor是否一定要是纯虚函数？</p>
+<hr>
+<h2 id="class-Row"><a href="#class-Row" class="headerlink" title="class Row"></a>class Row</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> IndexType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Row</span> &#123;</span></div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  ...</div><div class="line">  <span class="keyword">size_t</span> length;</div><div class="line">  <span class="keyword">const</span> IndexType* field;</div><div class="line">  <span class="keyword">const</span> IndexType* index;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">real_t</span> *value;</div><div class="line">  ...</div><div class="line">  <span class="function"><span class="keyword">inline</span> IndexType <span class="title">get_index</span><span class="params">(<span class="keyword">size_t</span> i)</span> <span class="keyword">const</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> index[i];</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">inline</span> real_t <span class="title">get_value</span><span class="params">(<span class="keyword">size_t</span> i)</span> <span class="keyword">const</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> value[i];</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> V&gt;</div><div class="line">  <span class="function"><span class="keyword">inline</span> V <span class="title">SDot</span><span class="params">(<span class="keyword">const</span> V *weight, <span class="keyword">size_t</span> size)</span> <span class="keyword">const</span> </span>&#123;</div><div class="line">    ...</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><code>Row</code>类应该是一个面向稀疏行的类型，<code>length</code>是非零元素的个数，<code>IndexType *index</code>是非零元素的index，<code>real_t *value</code>是非零元素的值，<code>SDot</code>方法提供了<code>Row</code>和一个dense向量做点积的实现。<code>IndexType *field</code>的作用未知？</p>
+<h2 id="class-RowBlock"><a href="#class-RowBlock" class="headerlink" title="class RowBlock"></a>class RowBlock</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> IndexType&gt;</div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RowBlock</span> &#123;</span></div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>类似<code>class Row</code>，<code>class RowBlock</code>包含有一个系数矩阵的多个行，成员变量基本参照<code>Row</code>（单行变多行）。多了抽取其中一行以及抽取多行组成新的<code>RowBlock</code>的方法，采用复制指针的方法，不复制资源。注意到<code>Row</code>和<code>RowBlock</code>都不涉及资源的申请和释放，只提供基本的访问接口。</p>
+<hr>
+<h2 id="class-RowBlockIter"><a href="#class-RowBlockIter" class="headerlink" title="class RowBlockIter"></a>class RowBlockIter</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> IndexType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">RowBlockIter</span>:</span> <span class="keyword">public</span> DataIter&lt;RowBlock&lt;IndexType&gt; &gt; &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="keyword">static</span> RowBlockIter&lt;IndexType&gt; *Create(<span class="keyword">const</span> <span class="keyword">char</span> *uri,</div><div class="line">                                         <span class="keyword">unsigned</span> part_index,</div><div class="line">                                         <span class="keyword">unsigned</span> num_parts,</div><div class="line">                                         <span class="keyword">const</span> <span class="keyword">char</span> *type);</div><div class="line">  <span class="function"><span class="keyword">virtual</span> size_t <span class="title">NumCol</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="class-Parser"><a href="#class-Parser" class="headerlink" title="class Parser"></a>class Parser</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> IndexType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parser</span>:</span> <span class="keyword">public</span> DataIter&lt;RowBlock&lt;IndexType&gt; &gt; &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="keyword">static</span> RowBlockIter&lt;IndexType&gt; *Create(<span class="keyword">const</span> <span class="keyword">char</span> *uri,</div><div class="line">                                         <span class="keyword">unsigned</span> part_index,</div><div class="line">                                         <span class="keyword">unsigned</span> num_parts,</div><div class="line">                                         <span class="keyword">const</span> <span class="keyword">char</span> *type);</div><div class="line">  <span class="function"><span class="keyword">virtual</span> size_t <span class="title">BytesRead</span><span class="params">(<span class="keyword">void</span>)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="keyword">typedef</span> Parser&lt;IndexType&gt;* (*Factory)(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path,</div><div class="line">                                        <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>, <span class="built_in">std</span>::<span class="built_in">string</span>&gt;&amp; args,</div><div class="line">                                        <span class="keyword">unsigned</span> part_index,</div><div class="line">                                        <span class="keyword">unsigned</span> num_parts);</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> IndexType&gt;</div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ParserFactoryReg</span></span></div><div class="line">    : <span class="keyword">public</span> FunctionRegEntryBase&lt;ParserFactoryReg&lt;IndexType&gt;,</div><div class="line">                                  <span class="keyword">typename</span> Parser&lt;IndexType&gt;::Factory&gt; &#123;&#125;;</div></pre></td></tr></table></figure>
+<p>最值得关注的是出现了<code>FunctionRegEntryBase</code>的用法，这里需要捋一下，<code>FuntionRegEntryBase&lt;A, B&gt;</code>本身是一个template，它的第一个模板参数A决定了其每一个成员函数的返回类型，尤其是对方法<code>self()</code><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span>:</div><div class="line"> <span class="function"><span class="keyword">inline</span> EntryType &amp;<span class="title">self</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> *(<span class="keyword">static_cast</span>&lt;EntryType*&gt;(<span class="keyword">this</span>));</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>如果单看<code>self()</code>本身，是一个非常奇怪的行为，把<code>this</code>的类型转换成模板参数的类型。但是如果结合这里的使用方法来看，<code>ParserFactoryReg</code>继承自<code>FunctionRegEntryBase</code>，同时，<code>FunctionRegEntryBase</code>的模板参数又是<code>ParserFactoryReg</code>本身的类型，这就保证<code>self()</code>中的<code>static_cast</code>总是在两个有继承关系的类型之间进行。对上面这种设计模式进行抽象，大概就是<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> DeriveType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></div><div class="line">  <span class="function">DeriveType&amp; <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> *(<span class="keyword">static_cast</span>&lt;DeriveType*&gt;(<span class="keyword">this</span>));</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derive</span>:</span> <span class="keyword">public</span> Base&lt;Derive&lt;ParamType&gt; &gt; &#123;</div><div class="line">  ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p><code>class Derive</code>继承自<code>class Base</code>，它调用<code>f()</code>总是会返回一个类型为它自己的类型<code>Derive&lt;ParamType&gt;</code>的引用，单从这里能看到的是这种模式为所有派生自Base的类提供了一个永远能够返回他们自身类型引用的方法。但是这种做法的好处和必要性，现在还没有看出来。</p>
+<hr>
+<h2 id="MACRO"><a href="#MACRO" class="headerlink" title="MACRO"></a>MACRO</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTER_DATA_PARSER(IndexType, TypeName, FactoryFunction) \</span></div><div class="line">  DMLC_REGISTRY_REGISTER(::dmlc::ParserFactoryReg<span class="meta-string">&lt;IndexType&gt;,           \</span></div><div class="line">                         ParserFactoryReg ## _ ## IndexType, TypeName)  \</div><div class="line">  .set_body(FactoryFunction)</div></pre></td></tr></table></figure>
+<p><code>ParserFactoryReg&lt;IndexType&gt;</code>中，<code>self()</code>返回<code>ParserFactoryReg&lt;IndexType&gt;&amp;</code>，<code>body</code>成员变量的类型为<code>Parser&lt;IndexType&gt;::Factory</code>。通过调用<code>DMLC_REGISTRY_REGISTER</code>,首先初始化了一个singleton <code>Registry&lt;ParserFactory&lt;Index&gt; &gt;</code>，并且产生名为<code>__make_ParserFactoryReg_ ## IndexType ## _ ## TypeName ## _</code>，类为<code>ParaserFactory&lt;IndexType&gt;</code>的实例，且将该实例以<code>TypeName</code>为key加入<code>Registry&lt;ParserFactory&lt;Index&gt; &gt;</code>中。</p>
+<p>对于每一种<code>IndexType</code>，生成与之对应的全局唯一的<code>Registry</code>，每个<code>TypeName</code>对应Registry中的一个<code>Entry</code>类元素。在模板参数相同的情况下，可能有着不同的生产方式（<code>FactoryFunction</code>），<code>TypeName</code>用来区分这些不同的生产方式，和<code>FactoryFunction</code>一一对应。</p>
+<p>那么，register.h中<code>DMLC_REGISTRY_REGISTER&lt;EntryType, EntryTypeName, Name&gt;</code>实际上是在一个singleton的<code>Registry&lt;EntryType&gt;</code>中生成一个以<code>Name</code>为key的<code>Entry</code>。之所以相同的<code>EntryType</code>类有着多个不同<code>Name</code>，是因为它们的<code>Function</code>可能不同。以<code>PaserFunctionReg</code>为例，它是产生Parser的Factory的Registry，存在多种Factory方法</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_data/" data-id="cj3n4b5500003wszz5r4k1k17" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/06/07/mxnet_analysis_dmlc_register/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MXNet 源码分析(dmlc_core/include/dmlc/register.h)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_data/">MXNet源码分析(dmlc_core/include/dmlc/data.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_register/">MXNet 源码分析(dmlc_core/include/dmlc/register.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/c_macro/">C++中的宏定义</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/imperative-vs-declarative/">Imperative vs Declarative</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Dr.Moriaty<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

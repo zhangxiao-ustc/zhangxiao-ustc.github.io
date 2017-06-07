@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MXNet 源码分析(dmlc_core/include/dmlc/register.h) | 221A Baker Street</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="register.h主要提供对单例注册的支持 class Registryclass Registry是一个singleton class12345678910111213141516171819202122232425262728293031323334template&amp;lt;typename EntryType&amp;gt;class Registry &amp;#123; public:  ...  in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MXNet 源码分析(dmlc_core&#x2F;include&#x2F;dmlc&#x2F;register.h)">
+<meta property="og:url" content="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_register/index.html">
+<meta property="og:site_name" content="221A Baker Street">
+<meta property="og:description" content="register.h主要提供对单例注册的支持 class Registryclass Registry是一个singleton class12345678910111213141516171819202122232425262728293031323334template&amp;lt;typename EntryType&amp;gt;class Registry &amp;#123; public:  ...  in">
+<meta property="og:updated_time" content="2017-06-07T14:14:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MXNet 源码分析(dmlc_core&#x2F;include&#x2F;dmlc&#x2F;register.h)">
+<meta name="twitter:description" content="register.h主要提供对单例注册的支持 class Registryclass Registry是一个singleton class12345678910111213141516171819202122232425262728293031323334template&amp;lt;typename EntryType&amp;gt;class Registry &amp;#123; public:  ...  in">
+  
+    <link rel="alternate" href="/atom.xml" title="221A Baker Street" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">221A Baker Street</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mxnet_analysis_dmlc_register" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/07/mxnet_analysis_dmlc_register/" class="article-date">
+  <time datetime="2017-06-07T14:14:54.000Z" itemprop="datePublished">2017-06-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MXNet 源码分析(dmlc_core/include/dmlc/register.h)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>register.h主要提供对单例注册的支持</p>
+<h2 id="class-Registry"><a href="#class-Registry" class="headerlink" title="class Registry"></a>class Registry</h2><p>class Registry是一个singleton class<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> EntryType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Registry</span> &#123;</span></div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  ...</div><div class="line">  <span class="keyword">inline</span> EntryType &amp;__REGISTER__(cosnt <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name) &#123;</div><div class="line">    CHECK_EQ(fmap_.<span class="keyword">const</span>(name), <span class="number">0U</span>)</div><div class="line">        &lt;&lt; name &lt;&lt; <span class="string">"already registered"</span>;</div><div class="line">    EntryType *e = <span class="keyword">new</span> EntryType();</div><div class="line">    e-&gt;name = name;</div><div class="line">    fmap_[name] = e;</div><div class="line">    ...</div><div class="line">    entry_list_.push_back(e);</div><div class="line">    <span class="keyword">return</span> *e;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">static</span> Registry *<span class="title">Get</span><span class="params">()</span></span>;</div><div class="line"> <span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;EntryType*&gt; entry_list_;</div><div class="line">  ...</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>, EntryType*&gt; fmap_;</div><div class="line">  Registry() &#123;&#125;</div><div class="line"></div><div class="line">  ~Registry() &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; entry_list_.size(); ++i) &#123;</div><div class="line">      <span class="keyword">delete</span> entry_list_[i];</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line">...</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTRY_ENABLE(EntryType)                   \</span></div><div class="line">  template<span class="meta-string">&lt;&gt;                                              \</span></div><div class="line">  Registry&lt;EntryType &gt; * Registry&lt;EntryType &gt;::Get() &#123;    \</div><div class="line">    <span class="keyword">static</span> Registry&lt;EntryType &gt; inst;                     \</div><div class="line">    <span class="keyword">return</span> &amp;inst;                                         \</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>将ctor置于private中，禁止外部调用，singleton Registry只能通过Get()获得,有趣的是dtor也被声明为private，那么Registry的资源如何收回？又在何时收回？</p>
+<p>另一点是Get()的实现实际上并不在register.h中，而是出现在包含宏DMLC_REGISTRY_ENABLE的文件中，对于那些不含有该宏的方法，调用Get()会导致编译期报错，从而达到ENABLE/DISABLE的效果。</p>
+<p>由于Registry是一个template class，所以EntryType不同，对应的singleton也不是同一个。</p>
+<h2 id="class-FunctionRegEntryBase"><a href="#class-FunctionRegEntryBase" class="headerlink" title="class FunctionRegEntryBase"></a>class FunctionRegEntryBase</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> EntryType, <span class="keyword">typename</span> FunctionType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">FunctionRegEntryBase</span> &#123;</span></div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> name;</div><div class="line">  ...</div><div class="line">  FunctionType body;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> return_type;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">inline</span> EntryType &amp;<span class="title">set_body</span><span class="params">(FunctionType body)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>-&gt;body = body;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>-&gt;self();</div><div class="line">  &#125;</div><div class="line">  ...</div><div class="line">  <span class="function"><span class="keyword">inline</span> EntryType &amp;<span class="title">set_return_type</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;type)</span> </span>&#123;</div><div class="line">    return_type = type;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>-&gt;self();</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> <span class="keyword">protected</span>:</div><div class="line">  <span class="function"><span class="keyword">inline</span> EntryType &amp;<span class="title">self</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> *(<span class="keyword">static_cast</span>&lt;EntryType*&gt;(<span class="keyword">this</span>));</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>新奇的写法，FunctionType还可以通过template deduction得出，EntryType只出现在返回值上，而相应的return位置上也没有明确的类型，似乎只能通过显式实例化来确定。<br>再有，单就该函数看来，FunctionRegEntryBase和EntryType之间没有任何关系，使用static_cast进行类型转换的意义是什么？</p>
+<h2 id="MACRO"><a href="#MACRO" class="headerlink" title="MACRO"></a>MACRO</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTRY_ENABLE(EntryType)                         \</span></div><div class="line">  template<span class="meta-string">&lt;&gt;                                                    \</span></div><div class="line">  Registry&lt;EntryType &gt; *Registry&lt;EntryType &gt;::Get() &#123;           \</div><div class="line">    <span class="keyword">static</span> Registry&lt;EntryType &gt; inst;                           \</div><div class="line">    <span class="keyword">return</span> &amp;inst;                                               \</div><div class="line">  &#125;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTYR_REGISTER(EntryType, EntryTypeName, Name)  \</span></div><div class="line">  static DMLC_ATTRIBUTE_UNUSED EntryType &amp; __make_ ## EntryTypeName ## _ ## Name ## __ = \</div><div class="line">      ::dmlc::Registry<span class="meta-string">&lt;EntryType&gt;::Get()-&gt;__REGISTER__(#Name)   \</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTRY_FILE_TAG(UniqueTag)                       \</span></div><div class="line">    int __dmlc_registry_file_tag_ ## UniqueTag ## __() &#123;return 0;&#125;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> DMLC_REGISTRY_LINK_TAG(UniqueTag)                       \</span></div><div class="line">  int __dmlc_registry_file_tag_ ## UniqueTag ## __();           \</div><div class="line">  static int DMLC_ATTRIBUTE_UNUSED  __reg_file_tag_ ## UniqueTag ## __ = \</div><div class="line">      __dmlc_registry_file_tag_ ## UniqueTag ## __();</div></pre></td></tr></table></figure>
+<p>第一个宏上面已经说过了，第二个宏给定EntryType，EntryTypeName，Name，生成名为__make_EntryTypeName_Name__的EntryType引用，该引用绑定Registry<entrytype>中名为Name的EntryType变量。可能是因为注册并不代表接下来会用到，加上了DMLC_ATTRIBUTE_UNUSED (即__attribute__(unused))来通知编译器无需报warning。</entrytype></p>
+<p>最后两个宏是为了实现目标文件之间的强制连接，DMLC_REGISTRY_FILT_TAG是对应于UniqueTag的唯一函数定义，而DMLC_REGISTRY_LINK_TAG是对对应UniqueTag的函数的调用，由于该层调用关系，使得含有后者的目标文件一定会在静态链接阶段链入前者。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.cc</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*handler)</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *protocol)</span></span>;</div><div class="line"><span class="keyword">typedef</span> <span class="built_in">map</span>&lt;<span class="keyword">const</span> <span class="keyword">char</span> *, handler&gt; M;</div><div class="line">M m;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">register_handler</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *protocol, handler)</span> </span>&#123;</div><div class="line">  m[protocol] = handler;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; argc<span class="number">-1</span>; i+= <span class="number">2</span>) &#123;</div><div class="line">    M::iterator it = m.find(argv[i]);</div><div class="line">    <span class="keyword">if</span> (it != m.end()) it.second(argv[i+<span class="number">1</span>]);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//http.c(part of libhttp.a)</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HttpHandler</span> &#123;</span></div><div class="line">  HttpHandler() &#123; register_handler(<span class="string">"http"</span>, &amp;handle_http); &#125;</div><div class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handle_http</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *)</span> </span>&#123; <span class="comment">/* whatever */</span> &#125;</div><div class="line">&#125;;</div><div class="line">HttpHandler h; <span class="comment">// registers itself with main!</span></div></pre></td></tr></table></figure></p>
+<p>注意到main本身不依赖http.c中的任何成员，因此在编译时，如果使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cc -lhttp</div></pre></td></tr></table></figure></p>
+<p>生成的文件中不会含有http的部分。另一种解决方法是编译时增加链接选项<code>--whole-archive</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_register/" data-id="cj3n4b5510004wszzrrq8n9mw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/07/mxnet_analysis_dmlc_data/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MXNet源码分析(dmlc_core/include/dmlc/data.h)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/07/c_macro/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C++中的宏定义</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_data/">MXNet源码分析(dmlc_core/include/dmlc/data.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_register/">MXNet 源码分析(dmlc_core/include/dmlc/register.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/c_macro/">C++中的宏定义</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/imperative-vs-declarative/">Imperative vs Declarative</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Dr.Moriaty<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
