@@ -50,7 +50,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -60,6 +60,115 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-mxnet_analysis_object_pool" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/09/mxnet_analysis_object_pool/" class="article-date">
+  <time datetime="2017-06-09T05:27:45.000Z" itemprop="datePublished">2017-06-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/09/mxnet_analysis_object_pool/">MXNet源码分析(src/common/object_pool.h)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>object_pool.h实现了一个模板对象缓存池</p>
+<hr>
+<h2 id="class-ObjectPool"><a href="#class-ObjectPool" class="headerlink" title="class ObjectPool"></a>class ObjectPool</h2><hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line">template &lt;typename T&gt;</div><div class="line">class ObjectPool &#123;</div><div class="line"> public:</div><div class="line">  ~ObjectPool();</div><div class="line"></div><div class="line">  template &lt;typename... Args&gt;</div><div class="line">  T* New(Args&amp;&amp;... args);</div><div class="line"></div><div class="line">  void Delete(T* ptr);</div><div class="line"></div><div class="line">  static ObjectPool* Get();</div><div class="line"></div><div class="line">  static std::shared_ptr&lt;ObjectPool&gt; _GetSharedRef();</div><div class="line"></div><div class="line"> private:</div><div class="line">  struct LinkedList &#123;</div><div class="line">    T t;</div><div class="line">    LinkedList* next&#123;nullptr&#125;;</div><div class="line">  &#125;;</div><div class="line">  </div><div class="line">  constexpr static std::size_t kPageSize = 1 &lt;&lt; 12;</div><div class="line">  std::mutex m_;</div><div class="line">  LinkdeList* head_&#123;nullptr&#125;;</div><div class="line">  std::vector&lt;void*&gt; allocated_;</div><div class="line">  ObjectPool();</div><div class="line">  void AllocateChunk();</div><div class="line"></div><div class="line">  DISALLOW_COPY_AND_ASSIGN(ObjectPool);</div><div class="line">&#125;;</div><div class="line"></div><div class="line">template &lt;typename T&gt;</div><div class="line">template &lt;typename... Args&gt;</div><div class="line">T* ObjectPool&lt;T&gt;::New(Args&amp;&amp;... args) &#123;</div><div class="line">  LinkedList* ret;</div><div class="line">  &#123;</div><div class="line">    std::lock_guard&lt;std::mutex&gt; lock&#123;m_&#125;;</div><div class="line">    if (head_-&gt;next == nullptr) &#123;</div><div class="line">      AllocateChunk();</div><div class="line">    &#125;</div><div class="line">    ret = head_;</div><div class="line">    head_ = head_-&gt;next;</div><div class="line">  &#125;</div><div class="line">  return new (static_cast&lt;void*&gt;(ret)) T(std::forward&lt;Args&gt;(args)...);</div><div class="line">&#125;</div><div class="line"></div><div class="line">template &lt;typename T&gt;</div><div class="line">void ObjectPool&lt;T&gt;::Delete(T* ptr) &#123;</div><div class="line">  ptr-&gt;~T();</div><div class="line">  auto linked_list_ptr = reinterpret_cast&lt;LinkedList*&gt;(ptr);</div><div class="line">  &#123;</div><div class="line">    std::lock_guard&lt;std::mutex&gt; lock&#123;m_&#125;;</div><div class="line">    linked_list_ptr-&gt;next = head_;</div><div class="line">    head_ = linked_list_ptr;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">template &lt;typename T&gt;</div><div class="line">void ObjectPool&lt;T&gt;::AllocateChunk() &#123;</div><div class="line">  static_assert(sizeof(LinkedList) &lt;= kPageSize, &quot;Object too big.&quot;);</div><div class="line">  static_assert(sizeof(LinkedList) % alignof(LinkedList) == 0, &quot;ObjectPool Invariant&quot;);</div><div class="line">  static_assert(alignof(LinkedList) % alignof(T) == 0, &quot;ObjectPool Invariant&quot;);</div><div class="line">  static_assert(kPageSize % alignof(LinkedList) == 0, &quot;ObjectPool Invariant&quot;);</div><div class="line">  void* new_chunk_ptr;</div><div class="line">  int ret = _aligned_malloc(kPageSize, kPageSize);</div><div class="line">  CHECK(ret, 0) &lt;&lt; &quot;Allocation failed&quot;;</div><div class="line">  allocated_.emplace_back(new_chunk_ptr);</div><div class="line">  auto new_chunk = static_cast&lt;LinkedList*&gt;(new_chunk_ptr);</div><div class="line">  auto size = kPageSize / sizeof(LinkedList);</div><div class="line">  for (std::size_t i = 0; i &lt; size - 1; ++i) &#123;</div><div class="line">    new_chunk[i].next = &amp;new_chunk[i + 1];</div><div class="line">  &#125;</div><div class="line">  new_chunk[size - 1].next = head_;</div><div class="line">  head_ = new_chunk;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对象缓冲池通过AllocateChunk()分配页对齐的整页内存，新对象分配的内存全部来自于此，同时对象析构后的内存也不会因此释放。缓冲池内同时维护着一个链表，链表中的每个元素都指向一个未被对象占用的内存起始地址。在整个实现过程中，涉及到了一些细节：</p>
+<ul>
+<li>整个ObjectPool是一个singleton。</li>
+<li>New()和Delete()方法加锁，而_GetSharedRef()方法没加，在c11标准中，如果多个线程尝试去同时初始化同一个static local variable时，该变量只会被初始化一次，所以_GetSharedRef()是thread-safe，如果是在之前的标准中，就需要采用double-check的方式。</li>
+<li>New()利用变参模板和universal reference来解决perfect forwarding问题，利用inplacement new来进行在已分配内存上的对象构造。</li>
+<li>Delete()使用<code>ptr-&gt;~T()</code>的形式手动调用析构函数达到析构对象但不释放资源的目的。</li>
+<li>在AllocatChunk()最开始进行了各种检查，第一个是确保kPageSize足够大，第二个有点多余，理论上来说，结构体的size一定是align的整数倍（见下关于align的内容），第三个只有在T的align小于指针的align且不能整除它的情况下才不成立，但是意义不明？第四个检查为了保证Page里每个LinkList的起始地址都满足它的对齐条件（只要起始地址满足了就可以），从下一条可以看到，Page本身是kPageSize对齐的。</li>
+<li>还是<code>AllocateChunk()</code>中，<code>posix_memalign(&amp;new_chunk_ptr, kPageSize, kPageSize)</code>分配以<code>kPageSize</code>（前者）对齐的<code>kPageSize</code>（后者）大小的内存。<br>关于对齐，对齐是确保特定类型的数据的存储起始地址是特定数值的整数倍，这可以在硬件上取得更好的读写性能，甚至某些硬件强制这样要求。在x86平台上：</li>
+<li>char 1byte-aligned</li>
+<li>short 2byte-aligned</li>
+<li>int 4byte-aligned</li>
+<li>long 8byte-aligned </li>
+<li>float 4byte-aligned</li>
+<li>double 8byte-aligned</li>
+<li>point 8byte-aligned<br>一个C结构体的实际内存分配应该满足一下原则：</li>
+<li>假设以该结构体的起始地址为0，那么结构体中的所有变量的起始地址都应当满足它们各自的对齐要求，必要的时候pad，结构体本身的align是成员变量中最大的align，而一个结构体的最后，必要时要通过pad保证结构体的总的内存是其align的整数倍。<br>align取成员变量align最大值保证了一旦结构体按照该align对齐，它的每一个成员变量都是对齐的。而最后的补零，是为了保证在使用结构体数组时，数组里的每一个结构体都是对齐的。<br>原始结构体：<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MixedData</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">char</span> Data1;</div><div class="line">  <span class="keyword">short</span> Data2;</div><div class="line">  <span class="keyword">int</span> Data3;</div><div class="line">  <span class="keyword">char</span> Data4;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>内存中：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MixedData</span>  /* <span class="title">After</span> <span class="title">compilation</span> <span class="title">in</span> 32-<span class="title">bit</span> <span class="title">x86</span> <span class="title">machine</span> */</span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">char</span> Data1; <span class="comment">/* 1 byte */</span></div><div class="line">  <span class="keyword">char</span> Padding1[<span class="number">1</span>]; <span class="comment">/* 1 byte for the following 'short' to be aligned on a 2 byte boundary</span></div><div class="line">  assuming that the address where structure begins is an even number */</div><div class="line">  <span class="keyword">short</span> Data2; <span class="comment">/* 2 bytes */</span></div><div class="line">  <span class="keyword">int</span> Data3;  <span class="comment">/* 4 bytes - largest structure member */</span></div><div class="line">  <span class="keyword">char</span> Data4; <span class="comment">/* 1 byte */</span></div><div class="line">  <span class="keyword">char</span> Padding2[<span class="number">3</span>]; <span class="comment">/* 3 bytes to make total size of the structure 12 bytes */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>关于align可以参考: <a href="https://en.wikipedia.org/wiki/Data_structure_alignment" target="_blank" rel="external">https://en.wikipedia.org/wiki/Data_structure_alignment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/09/mxnet_analysis_object_pool/" data-id="cj3pevdtl0003wzzztyyqi89w" class="article-share-link">Delen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mxnet_analysis_io" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/08/mxnet_analysis_io/" class="article-date">
+  <time datetime="2017-06-08T06:06:37.000Z" itemprop="datePublished">2017-06-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/08/mxnet_analysis_io/">MXNet源码分析(include/mxnet/io.h)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>include/mxnet/io.h涉及data io structure以及data iterator</p>
+<hr>
+<h2 id="class-IIterator"><a href="#class-IIterator" class="headerlink" title="class IIterator"></a>class IIterator</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> DType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IIterator</span>:</span> <span class="keyword">public</span> dmlc::DataIter&lt;DType&gt; &#123;</div><div class="line">  ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>一个继承自DataIter，仍处于继承路径中段的派生类。</p>
+<hr>
+<h2 id="struct-DataInst"><a href="#struct-DataInst" class="headerlink" title="struct DataInst"></a>struct DataInst</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataInst</span> &#123;</span></div><div class="line">  <span class="keyword">unsigned</span> index;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;TBlob&gt; data;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> extra_data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>index</code>是DataInst对象的id，<code>data</code>存放若干TBlob的数据，<code>extra_data</code>的作用待考证。</p>
+<hr>
+<h2 id="struct-DataBatch"><a href="#struct-DataBatch" class="headerlink" title="struct DataBatch"></a>struct DataBatch</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataBatch</span> &#123;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;NDArray&gt; data;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint64_t</span>&gt; index;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> extra_data;</div><div class="line">  <span class="keyword">int</span> num_batch_padd;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::function&lt;IIterator&lt;DataBatch&gt; *()&gt; DataIteratorFactory;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataIteratorReg</span></span></div><div class="line">    : <span class="keyword">public</span> dmlc::FunctionRegEntryBase&lt;DataIteratorReg,</div><div class="line">                                        DataIteratorFactory&gt; &#123;&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MXNET_REGISTER_IO_ITER(Name) \</span></div><div class="line">  DMLC_REGISTRY_REGISTER(::mxnet::DataIteratorReg, DataIteratorReg, Name)</div></pre></td></tr></table></figure>
+<p><code>DataBatch</code>中包含若干<code>NDArray</code>（每个<code>NDArray</code>是一条input data）和它们的index。<br>注册时由于DataIterReg本身不是模板类，所以看得更清晰，这里的<code>MXNET_REGISTER_IO_ITER(Name)</code>由于<code>DataIterReg</code>本身不是模板类，所以比起dmlc_core/include/dmlc/data.h中的<code>DMLC_REGISTER_DATA_PARSER</code>少一个参数，注册的EntryType都是IIterator类，不同的<code>Name</code>对应了不同的<code>DataIteratorFactory</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/08/mxnet_analysis_io/" data-id="cj3pevdtq0006wzzz31jrfr11" class="article-share-link">Delen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-mxnet_analysis_dmlc_data" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -113,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_data/" data-id="cj3n4ci570002xbzz9ux4sikp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_data/" data-id="cj3pevdtk0002wzzz4k3zek6w" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -161,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_register/" data-id="cj3n4ci5a0004xbzzkb6i0ble" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/mxnet_analysis_dmlc_register/" data-id="cj3pevdto0005wzzzwcfb175g" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -207,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/c_macro/" data-id="cj3n4ci500000xbzzvu01icwq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/c_macro/" data-id="cj3pevdtm0004wzzzlm1wafbz" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -256,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/imperative-vs-declarative/" data-id="cj3n4ci580003xbzzm7ljbpv5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/imperative-vs-declarative/" data-id="cj3pevdti0001wzzzsz5dyb3y" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -301,7 +410,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/06/07/hello-world/" data-id="cj3n4ci550001xbzz9eg60w5j" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/06/07/hello-world/" data-id="cj3pevdtd0000wzzzm5mz0n1c" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -326,7 +435,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archieven</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
@@ -336,9 +445,17 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Recente berichten</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/06/09/mxnet_analysis_object_pool/">MXNet源码分析(src/common/object_pool.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/08/mxnet_analysis_io/">MXNet源码分析(include/mxnet/io.h)</a>
+          </li>
         
           <li>
             <a href="/2017/06/07/mxnet_analysis_dmlc_data/">MXNet源码分析(dmlc_core/include/dmlc/data.h)</a>
@@ -350,14 +467,6 @@
         
           <li>
             <a href="/2017/06/07/c_macro/">C++中的宏定义</a>
-          </li>
-        
-          <li>
-            <a href="/2017/06/07/imperative-vs-declarative/">Imperative vs Declarative</a>
-          </li>
-        
-          <li>
-            <a href="/2017/06/07/hello-world/">Hello World</a>
           </li>
         
       </ul>

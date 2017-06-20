@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MXNet源码分析(include/mxnet/io.h) | 221A Baker Street</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="include/mxnet/io.h涉及data io structure以及data iterator  class IIterator 1234template &amp;lt;typename DType&amp;gt;class IIterator: public dmlc::DataIter&amp;lt;DType&amp;gt; &amp;#123;  ...&amp;#125;; 一个继承自DataIter，仍处于继承路径中段的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MXNet源码分析(include&#x2F;mxnet&#x2F;io.h)">
+<meta property="og:url" content="http://yoursite.com/2017/06/08/mxnet_analysis_io/index.html">
+<meta property="og:site_name" content="221A Baker Street">
+<meta property="og:description" content="include/mxnet/io.h涉及data io structure以及data iterator  class IIterator 1234template &amp;lt;typename DType&amp;gt;class IIterator: public dmlc::DataIter&amp;lt;DType&amp;gt; &amp;#123;  ...&amp;#125;; 一个继承自DataIter，仍处于继承路径中段的">
+<meta property="og:updated_time" content="2017-06-08T06:06:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MXNet源码分析(include&#x2F;mxnet&#x2F;io.h)">
+<meta name="twitter:description" content="include/mxnet/io.h涉及data io structure以及data iterator  class IIterator 1234template &amp;lt;typename DType&amp;gt;class IIterator: public dmlc::DataIter&amp;lt;DType&amp;gt; &amp;#123;  ...&amp;#125;; 一个继承自DataIter，仍处于继承路径中段的">
+  
+    <link rel="alternate" href="/atom.xml" title="221A Baker Street" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">221A Baker Street</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mxnet_analysis_io" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/08/mxnet_analysis_io/" class="article-date">
+  <time datetime="2017-06-08T06:06:37.000Z" itemprop="datePublished">2017-06-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MXNet源码分析(include/mxnet/io.h)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>include/mxnet/io.h涉及data io structure以及data iterator</p>
+<hr>
+<h2 id="class-IIterator"><a href="#class-IIterator" class="headerlink" title="class IIterator"></a>class IIterator</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> DType&gt;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IIterator</span>:</span> <span class="keyword">public</span> dmlc::DataIter&lt;DType&gt; &#123;</div><div class="line">  ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>一个继承自DataIter，仍处于继承路径中段的派生类。</p>
+<hr>
+<h2 id="struct-DataInst"><a href="#struct-DataInst" class="headerlink" title="struct DataInst"></a>struct DataInst</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataInst</span> &#123;</span></div><div class="line">  <span class="keyword">unsigned</span> index;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;TBlob&gt; data;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> extra_data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>index</code>是DataInst对象的id，<code>data</code>存放若干TBlob的数据，<code>extra_data</code>的作用待考证。</p>
+<hr>
+<h2 id="struct-DataBatch"><a href="#struct-DataBatch" class="headerlink" title="struct DataBatch"></a>struct DataBatch</h2><hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataBatch</span> &#123;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;NDArray&gt; data;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint64_t</span>&gt; index;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> extra_data;</div><div class="line">  <span class="keyword">int</span> num_batch_padd;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::function&lt;IIterator&lt;DataBatch&gt; *()&gt; DataIteratorFactory;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">DataIteratorReg</span></span></div><div class="line">    : <span class="keyword">public</span> dmlc::FunctionRegEntryBase&lt;DataIteratorReg,</div><div class="line">                                        DataIteratorFactory&gt; &#123;&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MXNET_REGISTER_IO_ITER(Name) \</span></div><div class="line">  DMLC_REGISTRY_REGISTER(::mxnet::DataIteratorReg, DataIteratorReg, Name)</div></pre></td></tr></table></figure>
+<p><code>DataBatch</code>中包含若干<code>NDArray</code>（每个<code>NDArray</code>是一条input data）和它们的index。<br>注册时由于DataIterReg本身不是模板类，所以看得更清晰，这里的<code>MXNET_REGISTER_IO_ITER(Name)</code>由于<code>DataIterReg</code>本身不是模板类，所以比起dmlc_core/include/dmlc/data.h中的<code>DMLC_REGISTER_DATA_PARSER</code>少一个参数，注册的EntryType都是IIterator类，不同的<code>Name</code>对应了不同的<code>DataIteratorFactory</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/06/08/mxnet_analysis_io/" data-id="cj3pevdtq0006wzzz31jrfr11" class="article-share-link">Delen</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/09/mxnet_analysis_object_pool/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Nieuwer</strong>
+      <div class="article-nav-title">
+        
+          MXNet源码分析(src/common/object_pool.h)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/07/mxnet_analysis_dmlc_data/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ouder</strong>
+      <div class="article-nav-title">MXNet源码分析(dmlc_core/include/dmlc/data.h)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archieven</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recente berichten</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/06/09/mxnet_analysis_object_pool/">MXNet源码分析(src/common/object_pool.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/08/mxnet_analysis_io/">MXNet源码分析(include/mxnet/io.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_data/">MXNet源码分析(dmlc_core/include/dmlc/data.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/mxnet_analysis_dmlc_register/">MXNet 源码分析(dmlc_core/include/dmlc/register.h)</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/07/c_macro/">C++中的宏定义</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Dr.Moriaty<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
